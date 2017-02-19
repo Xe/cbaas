@@ -1,0 +1,8 @@
+{
+  "name": "cbaas",
+  "description": "chatbot as-a-service",
+  "memory": 128,
+  "timeout": 5,
+  "role": "arn:aws:iam::406973036429:role/cbaas_lambda_function",
+  "environment": {}
+}
