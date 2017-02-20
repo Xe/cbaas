@@ -54,7 +54,8 @@ func handleLine(c *irc.Client, m *irc.Message) {
 		return
 	}
 
-	command := strings.ToLower(m.Params[1][1:])
+	splitLine := strings.Split(m.Params[1], " ")
+	command := strings.ToLower(splitLine[0][1:])
 
 	err := invoke.Sync("cbaas_"+command, lm, &lo)
 	if err != nil {
