@@ -1,0 +1,3 @@
+{
+    "description": "given \";choice foo, bar, baz\", the bot will randomly choose between those options and return one"
+}
