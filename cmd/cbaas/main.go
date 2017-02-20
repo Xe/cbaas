@@ -5,6 +5,7 @@ import (
 	"net"
 	"strings"
 
+	"github.com/Xe/cbaas/lib"
 	"github.com/apex/invoke"
 	irc "gopkg.in/irc.v1"
 )
@@ -42,13 +43,13 @@ func handleLine(c *irc.Client, m *irc.Message) {
 		to = m.Prefix.Name
 	}
 
-	lm := &message{
+	lm := &lib.Message{
 		Protocol:   "irc",
 		Sender:     m.Prefix.Name,
 		To:         to,
 		BodyString: m.Params[1],
 	}
-	lo := []*message{}
+	lo := []*lib.Message{}
 
 	if m.Params[1][0] != ';' {
 		return
@@ -68,48 +69,4 @@ func handleLine(c *irc.Client, m *irc.Message) {
 		log.Printf("%s: %s", to, line.IRC())
 		c.Writef("PRIVMSG %s :%s", to, line.IRC())
 	}
-}
-
-type message struct {
-	Protocol   string    `json:"protocol"`
-	Sender     string    `json:"sender,omitempty"`
-	To         string    `json:"to"`
-	Body       []msgFrag `json:"body"`
-	BodyString string    `json:"bodyString"`
-}
-
-func (m *message) IRC() string {
-	if len(m.Body) == 0 {
-		return m.BodyString
-	}
-
-	result := ""
-
-	for _, frag := range m.Body {
-		result += frag.IRC()
-	}
-	return result
-}
-
-type msgFrag struct {
-	Body    string `json:"body"`
-	Mention string `json:"mention"`
-	Emoji   *emoji `json:"emoji"`
-}
-
-func (m msgFrag) IRC() string {
-	if m.Body != "" {
-		return m.Body
-	}
-
-	if m.Mention != "" {
-		return m.Mention
-	}
-
-	return ""
-}
-
-type emoji struct {
-	Name string `json:"name"`
-	ID   string `json:"id"`
 }
